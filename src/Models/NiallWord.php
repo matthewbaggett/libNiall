@@ -36,7 +36,7 @@ class NiallWord extends ActiveRecord
             $word = NiallWord::search()
             ->where('word_id', $relationship->word_child_id)
             //TODO: Check language.
-            ->where('score', 0, '>')
+            //->where('score', 0, '>')
             ->where('checked', date("Y-m-d", strtotime("last month")), '>')
             ->execOne();
             return $word;
@@ -94,7 +94,7 @@ class NiallWord extends ActiveRecord
         foreach ($dictionariesAvailable as $availableDictionary) {
             $dictionaries[$availableDictionary] = [
                 pspell_new($availableDictionary),
-                \Niall\Mind\NiallLanguage::Upsert($availableDictionary)
+                NiallLanguage::Upsert($availableDictionary)
             ];
         }
         return $dictionaries;
@@ -116,7 +116,7 @@ class NiallWord extends ActiveRecord
         // Step 2. Scan Dictionary.
         $matchesDict = false;
         foreach ($dictionaries as $lang => $thing) {
-            /** @var $language \Niall\Mind\NiallLanguage */
+            /** @var $language NiallLanguage */
             list($dict, $language) = $thing;
             if (pspell_check($dict, $this->word)) {
                 $matchesDict = true;

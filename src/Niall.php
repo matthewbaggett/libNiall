@@ -5,7 +5,7 @@ use Niall\Mind\Models;
 
 class Niall
 {
-    public static function niall_parse_message($message)
+    public function niall_parse_message($message)
     {
         $sentences = explode(".", $message);
         $sentences = array_filter($sentences);
@@ -36,9 +36,9 @@ class Niall
                         $oWord->can_start = "Yes";
                     } elseif ($i == count($words) - 1) {
                         $oWord->can_end = "Yes";
-                        self::add_word_relation($oWord, $oPreviousWord);
+                       $this->add_word_relation($oWord, $oPreviousWord);
                     } else {
-                        self::add_word_relation($oWord, $oPreviousWord);
+                        $this->add_word_relation($oWord, $oPreviousWord);
                     }
 
                     $oWord->save();
@@ -50,7 +50,7 @@ class Niall
         return $new_words;
     }
 
-    public static function add_word_relation(Models\NiallWord $oWord, Models\NiallWord $oPreviousWord)
+    public function add_word_relation(Models\NiallWord $oWord, Models\NiallWord $oPreviousWord)
     {
         $oWord->save();
         $oWordRelation = Models\NiallWordRelationship::search()->where('word_child_id', $oWord->word_id)->where('word_parent_id', $oPreviousWord->word_id)->execOne();
@@ -65,26 +65,26 @@ class Niall
         $oWordRelation->save();
     }
 
-    public static function get_sentence()
+    public function get_sentence()
     {
         $start_word = Models\NiallWord::search()
         ->where('can_start', 'Yes')
-        ->where('score', 0, '>')
-        ->where('checked', date("Y-m-d", strtotime("last month")), '>')
+        //->where('score', 0, '>')
+        //->where('checked', date("Y-m-d", strtotime("last month")), '>')
         ->order('rand()')
         ->execOne();
         $finished = false;
-      /**
-     * @var $words Models\NiallWord[]
-     */
+        /**
+         * @var $words Models\NiallWord[]
+         */
         $words[] = $start_word;
-        while ($finished == false) {
+        while ($finished == false && count($words) > 0 && end($words) != false) {
             $next_word = end($words)->get_child_word();
             if (!$next_word instanceof Models\NiallWord) {
                 $finished = true;
             } else {
                 if ($next_word->can_end) {
-                    if (rand(0, 3) == 0) {
+                    if (rand(0, 7) == 0) {
                         $finished = true;
                     }
                 }
@@ -92,12 +92,18 @@ class Niall
             }
         }
 
-        foreach ($words as $word) {
-            $word->frequency_used = $word->frequency_used + 1;
-            $word->save();
+        $words = array_filter($words);
+
+        if(count($words) > 0) {
+            foreach ($words as $word) {
+                $word->frequency_used = $word->frequency_used > 0 ? $word->frequency_used + 1 : 1;
+                $word->save();
+            }
         }
 
         $reply = implode(" ", $words) . ".";
+        #!\Kint::dump($reply, $words);
+        #exit;
         return [$reply, $words];
     }
 }
