@@ -15,6 +15,10 @@ class Niall
             $oPreviousWord = null;
             $words = explode(" ", $sentence);
             $words = array_filter($words);
+            // Ignore sentences shorter than 5 words long.
+            if(count($words) < 5){
+                continue;
+            }
             foreach ($words as $i => $word) {
                 $word = trim($word);
                 if ($word) {
