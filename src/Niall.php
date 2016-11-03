@@ -5,6 +5,19 @@ use Niall\Mind\Models;
 
 class Niall
 {
+    protected $endSentenceOdds = 8; // 8 = 1 in 8 chance
+
+    /**
+     * Set odds of ending a sentence.
+     * @param int $odds example 8 = 1 in 8 chance
+     * @return Niall
+     */
+    public function setEndSentenceOdds($odds = 8)
+    {
+        $this->endSentenceOdds = $odds;
+        return $this;
+    }
+
     public function niall_parse_message($message)
     {
         $sentences = explode(".", $message);
@@ -72,11 +85,11 @@ class Niall
     public function get_sentence()
     {
         $start_word = Models\NiallWord::search()
-        ->where('can_start', 'Yes')
-        //->where('score', 0, '>')
-        //->where('checked', date("Y-m-d", strtotime("last month")), '>')
-        ->order('rand()')
-        ->execOne();
+            ->where('can_start', 'Yes')
+            //->where('score', 0, '>')
+            //->where('checked', date("Y-m-d", strtotime("last month")), '>')
+            ->order('rand()')
+            ->execOne();
         $finished = false;
         /**
          * @var $words Models\NiallWord[]
@@ -88,7 +101,7 @@ class Niall
                 $finished = true;
             } else {
                 if ($next_word->can_end) {
-                    if (rand(0, 7) == 0) {
+                    if (rand(1, $this->endSentenceOdds) == 1) {
                         $finished = true;
                     }
                 }
