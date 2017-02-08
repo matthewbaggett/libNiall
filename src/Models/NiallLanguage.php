@@ -8,7 +8,6 @@ use \Thru\ActiveRecord\ActiveRecord;
  * @package Niall\Mind
  * @var $language_id integer
  * @var $language varchar(128)
-
  */
 class NiallLanguage extends ActiveRecord
 {
@@ -16,11 +15,11 @@ class NiallLanguage extends ActiveRecord
     public $language_id;
     public $language;
 
-  /**
-   * @param $name
-   * @return NiallLanguage
-   * @throws \Thru\ActiveRecord\Exception
-   */
+    /**
+     * @param $name
+     * @return NiallLanguage
+     * @throws \Thru\ActiveRecord\Exception
+     */
     public static function Upsert($name)
     {
         $lang = self::search()->where('language', $name)->execOne();

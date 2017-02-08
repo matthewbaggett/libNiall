@@ -34,11 +34,11 @@ class NiallWord extends ActiveRecord
         $relationship = NiallWordRelationship::search()->where('word_parent_id', $this->word_id)->order('rand()')->execOne();
         if ($relationship instanceof NiallWordRelationship) {
             $word = NiallWord::search()
-            ->where('word_id', $relationship->word_child_id)
-            //TODO: Check language.
-            //->where('score', 0, '>')
-            ->where('checked', date("Y-m-d", strtotime("last month")), '>')
-            ->execOne();
+                ->where('word_id', $relationship->word_child_id)
+                //TODO: Check language.
+                //->where('score', 0, '>')
+                ->where('checked', date("Y-m-d", strtotime("last month")), '>')
+                ->execOne();
             return $word;
         } else {
             return false;
@@ -50,26 +50,26 @@ class NiallWord extends ActiveRecord
         return $this->word;
     }
 
-  /**
-   * @return NiallLanguage[]
-   * @throws \Thru\ActiveRecord\Exception
-   */
+    /**
+     * @return NiallLanguage[]
+     * @throws \Thru\ActiveRecord\Exception
+     */
     public function getLanguages()
     {
         $langs = [];
         $links = NiallWordLanguage::search()->where('word_id', $this->word_id)->exec();
         if (count($links) > 0) {
             foreach ($links as $link) {
-              /** @var $link NiallWordLanguage */
+                /** @var $link NiallWordLanguage */
                 $langs[] = $link->getLang();
             }
         }
         return $langs;
     }
 
-  /**
-   * @return string
-   */
+    /**
+     * @return string
+     */
     public function getLanguageList()
     {
         $langList = '';
@@ -108,7 +108,7 @@ class NiallWord extends ActiveRecord
 
         // Step 1. Minimum length. Single characters that are not "a" and "i" are rejected.
         if (strlen($this->word) == 1) {
-            if (!in_array(strtolower($this->word), ['a','i'])) {
+            if (!in_array(strtolower($this->word), ['a', 'i'])) {
                 $score--;
             }
         }

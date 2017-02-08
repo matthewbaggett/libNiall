@@ -17,10 +17,10 @@ class NiallWordLanguage extends ActiveRecord
     public $language_id;
     public $word_id;
 
-  /**
-   * @return NiallLanguage
-   * @throws \Thru\ActiveRecord\Exception
-   */
+    /**
+     * @return NiallLanguage
+     * @throws \Thru\ActiveRecord\Exception
+     */
     public function getLang()
     {
         return NiallLanguage::search()->where('language_id', $this->language_id)->execOne();

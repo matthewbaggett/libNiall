@@ -29,15 +29,15 @@ class Niall
             $words = explode(" ", $sentence);
             $words = array_filter($words);
             // Ignore sentences shorter than 5 words long.
-            if(count($words) < 5){
+            if (count($words) < 5) {
                 continue;
             }
             foreach ($words as $i => $word) {
                 $word = trim($word);
                 if ($word) {
                     $oWord = Models\NiallWord::search()
-                    ->where('word', $word)
-                    ->execOne();
+                        ->where('word', $word)
+                        ->execOne();
                     if (!$oWord instanceof Models\NiallWord) {
                         $oWord = new Models\NiallWord();
                         $oWord->word = $word;
@@ -53,7 +53,7 @@ class Niall
                         $oWord->can_start = "Yes";
                     } elseif ($i == count($words) - 1) {
                         $oWord->can_end = "Yes";
-                       $this->add_word_relation($oWord, $oPreviousWord);
+                        $this->add_word_relation($oWord, $oPreviousWord);
                     } else {
                         $this->add_word_relation($oWord, $oPreviousWord);
                     }
@@ -111,7 +111,7 @@ class Niall
 
         $words = array_filter($words);
 
-        if(count($words) > 0) {
+        if (count($words) > 0) {
             foreach ($words as $word) {
                 $word->frequency_used = $word->frequency_used > 0 ? $word->frequency_used + 1 : 1;
                 $word->save();
