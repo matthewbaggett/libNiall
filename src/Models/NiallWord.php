@@ -37,7 +37,7 @@ class NiallWord extends ActiveRecord
                 ->where('word_id', $relationship->word_child_id)
                 //TODO: Check language.
                 //->where('score', 0, '>')
-                ->where('checked', date("Y-m-d", strtotime("last month")), '>')
+                //->where('checked', date("Y-m-d", strtotime("last month")), '>')
                 ->execOne();
             return $word;
         } else {

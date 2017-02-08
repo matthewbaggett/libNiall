@@ -5,7 +5,7 @@ use Niall\Mind\Models;
 
 class Niall
 {
-    protected $endSentenceOdds = 8; // 8 = 1 in 8 chance
+    protected $endSentenceOdds = 100; // 8 = 1 in 8 chance
 
     /**
      * Set odds of ending a sentence.
