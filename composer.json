@@ -1,19 +1,19 @@
 {
-    "name": "matthewbaggett/libniall",
-    "type": "library",
-    "license": "GPLv3",
-    "authors": [
-        {
-            "name": "Matthew Baggett",
-            "email": "matthew@baggett.me"
-        }
-    ],
-    "require": {
-        "thru.io/active_record": "^0.4.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Niall\\Mind\\": "src"
-        }
+  "name": "matthewbaggett/libniall",
+  "type": "library",
+  "license": "GPLv3",
+  "authors": [
+    {
+      "name": "Matthew Baggett",
+      "email": "matthew@baggett.me"
     }
+  ],
+  "require": {
+    "thru.io/active_record": "^0.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Niall\\Mind\\": "src"
+    }
+  }
 }
