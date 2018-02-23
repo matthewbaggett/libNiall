@@ -90,49 +90,55 @@ class NiallWord extends ActiveRecord
                 $dictionariesAvailable[] = $potentialDict;
             }
         }
-        $dictionaries = [];
-        foreach ($dictionariesAvailable as $availableDictionary) {
-            $dictionaries[$availableDictionary] = [
-                \pspell_new($availableDictionary),
-                NiallLanguage::Upsert($availableDictionary)
-            ];
+        if($dictionariesAvailable > 0) {
+            $dictionaries = [];
+            foreach ($dictionariesAvailable as $availableDictionary) {
+
+                $dictionaries[$availableDictionary] = [
+                    \pspell_new($availableDictionary),
+                    NiallLanguage::Upsert($availableDictionary)
+                ];
+            }
+            return $dictionaries;
         }
-        return $dictionaries;
+        return false;
     }
 
     public function interpret()
     {
         $dictionaries = $this->getDictionaries();
 
-        $score = 1;
+        if($dictionaries) {
+            $score = 1;
 
-        // Step 1. Minimum length. Single characters that are not "a" and "i" are rejected.
-        if (strlen($this->word) == 1) {
-            if (!in_array(strtolower($this->word), ['a', 'i'])) {
+            // Step 1. Minimum length. Single characters that are not "a" and "i" are rejected.
+            if (strlen($this->word) == 1) {
+                if (!in_array(strtolower($this->word), ['a', 'i'])) {
+                    $score--;
+                }
+            }
+
+            // Step 2. Scan Dictionary.
+            $matchesDict = false;
+            foreach ($dictionaries as $lang => $thing) {
+                /** @var $language NiallLanguage */
+                list($dict, $language) = $thing;
+                if (\pspell_check($dict, $this->word)) {
+                    $matchesDict = true;
+                    $wordLanguage = new NiallWordLanguage();
+                    $wordLanguage->word_id = $this->word_id;
+                    $wordLanguage->language_id = $language->language_id;
+                    $wordLanguage->save();
+                }
+            }
+            if (!$matchesDict) {
                 $score--;
             }
-        }
 
-        // Step 2. Scan Dictionary.
-        $matchesDict = false;
-        foreach ($dictionaries as $lang => $thing) {
-            /** @var $language NiallLanguage */
-            list($dict, $language) = $thing;
-            if (\pspell_check($dict, $this->word)) {
-                $matchesDict = true;
-                $wordLanguage = new NiallWordLanguage();
-                $wordLanguage->word_id = $this->word_id;
-                $wordLanguage->language_id = $language->language_id;
-                $wordLanguage->save();
-            }
-        }
-        if (!$matchesDict) {
-            $score--;
-        }
+            $this->score = $score;
 
-        $this->score = $score;
-
-        $this->checked = date("Y-m-d H:i:s");
-        $this->save();
+            $this->checked = date("Y-m-d H:i:s");
+            $this->save();
+        }
     }
 }
