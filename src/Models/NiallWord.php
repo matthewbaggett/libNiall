@@ -93,7 +93,7 @@ class NiallWord extends ActiveRecord
         $dictionaries = [];
         foreach ($dictionariesAvailable as $availableDictionary) {
             $dictionaries[$availableDictionary] = [
-                pspell_new($availableDictionary),
+                \pspell_new($availableDictionary),
                 NiallLanguage::Upsert($availableDictionary)
             ];
         }
@@ -118,7 +118,7 @@ class NiallWord extends ActiveRecord
         foreach ($dictionaries as $lang => $thing) {
             /** @var $language NiallLanguage */
             list($dict, $language) = $thing;
-            if (pspell_check($dict, $this->word)) {
+            if (\pspell_check($dict, $this->word)) {
                 $matchesDict = true;
                 $wordLanguage = new NiallWordLanguage();
                 $wordLanguage->word_id = $this->word_id;
